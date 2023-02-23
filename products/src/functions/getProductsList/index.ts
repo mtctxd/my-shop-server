@@ -8,9 +8,6 @@ export const getProductsList = {
         method: 'get',
         path: 'products',
         request: {
-          // schemas: {
-          //   'application/json': helpSchema,
-          // },
         },
       },
     },

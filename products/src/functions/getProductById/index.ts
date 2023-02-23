@@ -7,11 +7,7 @@ export const getProductById = {
       http: {
         method: 'get',
         path: 'products/{productID}',
-        request: {
-          // schemas: {
-          //   'application/json': helpSchema,
-          // },
-        },
+        request: {},
       },
     },
   ],

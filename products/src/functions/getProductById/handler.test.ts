@@ -1,6 +1,6 @@
 import { formatJSONResponse } from '@libs/api-gateway';
-import { StatusCode } from 'src/types/StatusCode';
-import { productsMock } from 'src/mocks/productsMock';
+import { StatusCode } from '@declarations/StatusCode';
+import { productsMock } from '@mocks/productsMock';
 import { getProductByIdHandler } from './handler';
 
 describe('getProductByIdHandler', () => {

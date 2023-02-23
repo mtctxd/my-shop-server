@@ -1,8 +1,8 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import { formatJSONResponse } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
-import { productsMock } from 'src/mocks/productsMock';
-import { StatusCode } from 'src/types/StatusCode';
+import { productsMock } from '@mocks/productsMock';
+import { StatusCode } from '@declarations/StatusCode';
 
 export const getProductByIdHandler: ValidatedEventAPIGatewayProxyEvent<
   unknown
