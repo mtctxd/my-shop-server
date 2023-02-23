@@ -1,18 +1,22 @@
 import { formatJSONResponse } from '@libs/api-gateway';
 import { StatusCode } from '@declarations/StatusCode';
 import { productsMock } from '@mocks/productsMock';
-import { getProductByIdHandler } from './handler';
+import { getProductById } from '../getProductById';
+import { Context } from 'aws-lambda';
 
-describe('getProductByIdHandler', () => {
+const context = {} as Context;
+const callback = jest.fn()
+
+describe('getProductById', () => {
   it('should return a product when given a valid ID', async () => {
     const product = productsMock[0];
     const event = {
       pathParameters: {
         productID: product.id,
       },
-    };
+    } as any;
 
-    const response = await (getProductByIdHandler as any)(event);
+    const response: any = await getProductById(event, context, callback);
 
     expect(response).toEqual(
       formatJSONResponse({
@@ -28,9 +32,9 @@ describe('getProductByIdHandler', () => {
       pathParameters: {
         productID: invalidID,
       },
-    };
+    } as any;
 
-    const response = await (getProductByIdHandler as any)(event);
+    const response: any = await getProductById(event, context, callback);
 
     expect(response).toEqual(
       formatJSONResponse(

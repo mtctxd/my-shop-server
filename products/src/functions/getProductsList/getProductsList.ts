@@ -3,7 +3,7 @@ import { formatJSONResponse } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
 import { productsMock } from '@mocks/productsMock';
 
-const getProductsListHandler: ValidatedEventAPIGatewayProxyEvent<
+export const getProductsList: ValidatedEventAPIGatewayProxyEvent<
   unknown
 > = async () => {
   return formatJSONResponse({
@@ -11,4 +11,4 @@ const getProductsListHandler: ValidatedEventAPIGatewayProxyEvent<
   });
 };
 
-export const main = middyfy(getProductsListHandler);
+export const getProductsListHandler = middyfy(getProductsList);

@@ -1,4 +1,4 @@
-import { Product } from 'src/declarations/Product';
+import { Product } from '@declarations/Product';
 
 export const productsMock: Product[] = [
   {

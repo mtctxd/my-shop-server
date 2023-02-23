@@ -1,10 +1,12 @@
-import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
-import { formatJSONResponse } from '@libs/api-gateway';
+import {
+  formatJSONResponse,
+  ValidatedEventAPIGatewayProxyEvent,
+} from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
 import { productsMock } from '@mocks/productsMock';
 import { StatusCode } from '@declarations/StatusCode';
 
-export const getProductByIdHandler: ValidatedEventAPIGatewayProxyEvent<
+export const getProductById: ValidatedEventAPIGatewayProxyEvent<
   unknown
 > = async (event) => {
   const { productID } = event.pathParameters;
@@ -24,4 +26,4 @@ export const getProductByIdHandler: ValidatedEventAPIGatewayProxyEvent<
   });
 };
 
-export const main = middyfy(getProductByIdHandler);
+export const getProductByIdHandler = middyfy(getProductById);
