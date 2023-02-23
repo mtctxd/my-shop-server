@@ -3,16 +3,26 @@ import { StatusCode } from '@declarations/StatusCode';
 import { productsMock } from '@mocks/productsMock';
 import { getProductById } from '../getProductById';
 import { Context } from 'aws-lambda';
+import { productsStorage } from '@utils/ProductsStorage';
+
+jest.mock('@utils/ProductsStorage', () => ({
+  productsStorage: {
+    getProductById: jest.fn(),
+  },
+}));
 
 const context = {} as Context;
-const callback = jest.fn()
+const callback = jest.fn();
 
 describe('getProductById', () => {
   it('should return a product when given a valid ID', async () => {
-    const product = productsMock[0];
+    const selectedProduct = productsMock[0];
+    (productsStorage.getProductById as jest.Mock).mockImplementationOnce(
+      async () => selectedProduct
+    );
     const event = {
       pathParameters: {
-        productID: product.id,
+        productID: selectedProduct.id,
       },
     } as any;
 
@@ -20,7 +30,7 @@ describe('getProductById', () => {
 
     expect(response).toEqual(
       formatJSONResponse({
-        message: product,
+        message: selectedProduct,
       })
     );
     expect(response.statusCode).toEqual(200);

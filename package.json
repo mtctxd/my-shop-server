@@ -1,0 +1,19 @@
+{
+  "name": "my-shop-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mtctxd/my-shop-server.git"
+  },
+  "author": "Dmytro Osypiuk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mtctxd/my-shop-server/issues"
+  },
+  "homepage": "https://github.com/mtctxd/my-shop-server#readme"
+}

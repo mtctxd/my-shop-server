@@ -13,7 +13,8 @@
       "@functions/*": ["src/functions/*"],
       "@libs/*": ["src/libs/*"],
       "@declarations/*": ["src/declarations/*"],
-      "@mocks/*": ["src/mocks/*"]
+      "@mocks/*": ["src/mocks/*"],
+      "@utils/*": ["src/utils/*"]
     },
     "esModuleInterop": true
   },

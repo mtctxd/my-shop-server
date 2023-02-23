@@ -1,16 +1,16 @@
+import { StatusCode } from '@declarations/StatusCode';
 import {
   formatJSONResponse,
   ValidatedEventAPIGatewayProxyEvent,
 } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
-import { productsMock } from '@mocks/productsMock';
-import { StatusCode } from '@declarations/StatusCode';
+import { productsStorage } from '@utils/ProductsStorage';
 
 export const getProductById: ValidatedEventAPIGatewayProxyEvent<
   unknown
 > = async (event) => {
   const { productID } = event.pathParameters;
-  const product = productsMock.find((product) => product.id === productID);
+  const product = await productsStorage.getProductById(productID);
 
   if (!product) {
     return formatJSONResponse(

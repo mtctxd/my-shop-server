@@ -8,6 +8,12 @@ export const getProductsList = {
         method: 'get',
         path: 'products',
         request: {},
+        responseData: {
+          200: {
+            description: 'Should return products list',
+            bodyType: 'ProductsList'
+          }
+        },
       },
     },
   ],
