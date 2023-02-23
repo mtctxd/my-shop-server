@@ -6,7 +6,7 @@ export const getProductById = {
     {
       http: {
         method: 'get',
-        path: 'products/{id}',
+        path: 'products/{productID}',
         request: {
           // schemas: {
           //   'application/json': helpSchema,

@@ -1,14 +1,26 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import { formatJSONResponse } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
-import { productsMock } from 'src/@mocks/productsMock';
+import { productsMock } from 'src/mocks/productsMock';
+import { StatusCode } from 'src/types/StatusCode';
 
-const getProductByIdHandler: ValidatedEventAPIGatewayProxyEvent<
+export const getProductByIdHandler: ValidatedEventAPIGatewayProxyEvent<
   unknown
 > = async (event) => {
-  const { id } = event.pathParameters;
+  const { productID } = event.pathParameters;
+  const product = productsMock.find((product) => product.id === productID);
+
+  if (!product) {
+    return formatJSONResponse(
+      {
+        message: 'Not Found',
+      },
+      StatusCode.NOT_FOUND
+    );
+  }
+
   return formatJSONResponse({
-    message: productsMock.find((product) => product.id === id),
+    message: product,
   });
 };
 
