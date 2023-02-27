@@ -4,26 +4,35 @@ import {
   ValidatedEventAPIGatewayProxyEvent,
 } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
-import { productsStorage } from '@utils/ProductsStorage';
+import { productsService } from 'src/services/ProductsService';
 
 export const getProductById: ValidatedEventAPIGatewayProxyEvent<
   unknown
 > = async (event) => {
   const { productID } = event.pathParameters;
-  const product = await productsStorage.getProductById(productID);
+  try {
+    const product = await productsService.getProductById(productID);
 
-  if (!product) {
-    return formatJSONResponse(
-      {
-        message: 'Not Found',
+    if (!product) {
+      return formatJSONResponse({
+        response: {
+          message: 'Product Not Found',
+        },
+        statusCode: StatusCode.NOT_FOUND,
+      });
+    }
+
+    return formatJSONResponse({
+      response: product,
+    });
+  } catch (error) {
+    return formatJSONResponse({
+      response: {
+        message: error.message,
       },
-      StatusCode.NOT_FOUND
-    );
+      statusCode: StatusCode.INTERNAL_SERVER_ERROR,
+    });
   }
-
-  return formatJSONResponse({
-    message: product,
-  });
 };
 
 export const getProductByIdHandler = middyfy(getProductById);
