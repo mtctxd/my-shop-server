@@ -1,11 +1,32 @@
 import type { AWS } from '@serverless/typescript';
 
-import hello from '@functions/hello';
+import * as functions from './src/functions';
+
+const fs = require('fs');
+
+function getDeclarationFiles(): string[] {
+  const declarationDir = './src/declarations';
+  const declarationFiles: string[] = [];
+
+  const files = fs.readdirSync(declarationDir);
+
+  for (const file of files) {
+    if (file.endsWith('.d.ts')) {
+      declarationFiles.push(`${declarationDir}/${file}`);
+    }
+  }
+
+  return declarationFiles;
+}
 
 const serverlessConfiguration: AWS = {
   service: 'products',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild', 'serverless-offline'],
+  plugins: [
+    'serverless-auto-swagger',
+    'serverless-webpack',
+    'serverless-offline',
+  ],
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
@@ -20,19 +41,23 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { hello },
+  functions,
   package: { individually: true },
   custom: {
-    esbuild: {
-      bundle: true,
-      minify: false,
-      sourcemap: true,
-      exclude: ['aws-sdk'],
-      target: 'node14',
-      define: { 'require.resolve': undefined },
-      platform: 'node',
-      concurrency: 10,
+    webpack: {
+      webpackConfig: './webpack.config.js',
+      includeModules: true,
     },
+    ['serverless-offline']: {
+      useChildProcesses: true,
+    },
+    autoswagger: {
+      title: 'Products service',
+      basePath: '/dev',
+      apiType: 'httpApi',
+      generateSwaggerOnDeploy: true,
+      typefiles: [...getDeclarationFiles()]
+    }
   },
 };
 
