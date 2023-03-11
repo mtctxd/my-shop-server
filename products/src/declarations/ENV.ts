@@ -1,0 +1,4 @@
+export enum ENV {
+  TABLE_PRODUCTS = 'TABLE_PRODUCTS',
+  TABLE_STOCKS = 'TABLE_STOCKS',
+}
