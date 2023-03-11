@@ -13,6 +13,10 @@ export const loggerMiddy = (): MiddlewareObj<any, any, Error, Context> => {
   };
 };
 
+export const midifyEvent = (handler) => {
+  return middy(handler).use(loggerMiddy());
+};
+
 export const middyfy = (handler) => {
   return middy(handler).use(middyJsonBodyParser()).use(loggerMiddy());
 };

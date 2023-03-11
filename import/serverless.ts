@@ -1,8 +1,7 @@
 import type { AWS } from '@serverless/typescript';
 import dotenv from 'dotenv';
 
-import * as functions from './src/functions';
-import { ENV } from '@declarations/env';
+import functions from './src/functions';
 
 dotenv.config();
 
@@ -23,6 +22,21 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
     },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 's3:*',
+        Resource: [
+          'arn:aws:s3:::my-shop-server-imports/',
+          'arn:aws:s3:::my-shop-server-imports/*',
+        ],
+        Condition: {
+          StringEquals: {
+            'aws:SourceOrigin': '*',
+          },
+        },
+      },
+    ],
   },
   // import the functions via paths
   functions,
@@ -35,7 +49,7 @@ const serverlessConfiguration: AWS = {
     ['serverless-offline']: {
       useChildProcesses: true,
     },
-  }
+  },
 };
 
 module.exports = serverlessConfiguration;
