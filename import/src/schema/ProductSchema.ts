@@ -7,10 +7,3 @@ export const productCreateSchema = z.object({
   count: z.number().optional(),
 }, {});
 
-export const productCSVSchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  price: z.string(),
-  count: z.string().optional(),
-}, {});
-

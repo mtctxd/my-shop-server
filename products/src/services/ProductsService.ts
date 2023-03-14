@@ -16,6 +16,14 @@ export class ProductsService {
   productsTableName = 'PRODUCTS';
   stocksTableName = 'STOCKS';
 
+  static createPutRequestItems<T>(items: T[]): { PutRequest: { Item: T } }[] {
+    return items.map((item) => ({
+      PutRequest: {
+        Item: item,
+      },
+    }));
+  }
+
   constructor(private dynamoDBService: DocumentClient) {}
 
   async getProducts(): Promise<Product[]> {
@@ -93,15 +101,15 @@ export class ProductsService {
     }
   }
 
-  async createProduct(product: Omit<Product, 'id'>): Promise<void> {
-    const id = Math.random().toString(16);
-    const dbProduct: DBProduct = {
-      ...omit(product, 'count'),
-      id,
+  async createProduct(product: Omit<Product, 'id'>): Promise<Product> {
+    const createdProduct: Product = {
+      ...product,
+      id: Math.random().toString(16),
     };
+    const dbProduct: DBProduct = omit(createdProduct, 'count');
 
     const dbStock: DBStocks = {
-      product_id: id,
+      product_id: createdProduct.id,
       count: product.count || 0,
     };
 
@@ -128,6 +136,8 @@ export class ProductsService {
           ],
         })
         .promise();
+
+      return createdProduct;
     } catch {
       throw new Error('Transaction failed');
     }
