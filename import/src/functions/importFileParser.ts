@@ -24,6 +24,8 @@ export const importFileParser: any = async (event: S3Event) => {
       await moveFileToFolder({ record, destinationFolder: 'parsed' });
     }
 
+    console.log(JSON.stringify(records))
+
     const { QueueUrl } = await sqs
       .getQueueUrl({ QueueName: 'CATALOG_ITEMS_QUEUE' })
       .promise();

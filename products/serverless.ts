@@ -9,7 +9,8 @@ dotenv.config();
 if (
   !process.env[ENV.TABLE_PRODUCTS] ||
   !process.env[ENV.TABLE_STOCKS] ||
-  !process.env[ENV.CATALOG_ITEMS_QUEUE]
+  !process.env[ENV.CATALOG_ITEMS_QUEUE] ||
+  !process.env[ENV.CREATE_PRODUCT_TOPIC]
 ) {
   throw new Error('Some ENV variables is not provided');
 }
@@ -65,6 +66,11 @@ const serverlessConfiguration: AWS = {
         Effect: 'Allow',
         Action: ['SQS:ReceiveMessage'],
         Resource: [{ 'Fn::GetAtt': ['CatalogItamQueue', 'Arn'] }],
+      },
+      {
+        Effect: 'Allow',
+        Action: ['SNS:Publish'],
+        Resource: { Ref: 'CreateProductTopic' },
       },
     ],
   },
@@ -130,6 +136,22 @@ const serverlessConfiguration: AWS = {
             WriteCapacityUnits: 1,
           },
           TableName: process.env[ENV.TABLE_STOCKS],
+        },
+      },
+      CreateProductTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: process.env[ENV.CREATE_PRODUCT_TOPIC],
+        },
+      },
+      CreateProductSubscribtion: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          TopicArn: {
+            Ref: 'CreateProductTopic',
+          },
+          Endpoint: process.env[ENV.BASIC_SUBSCRIBTION_EMAIL],
+          Protocol: 'email',
         },
       },
     },

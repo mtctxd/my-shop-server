@@ -1,4 +1,3 @@
-import { ENV } from '@declarations/ENV';
 import { StatusCode } from '@declarations/StatusCode';
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import { formatJSONResponse } from '@libs/api-gateway';

@@ -15,9 +15,7 @@ module.exports = {
     extensions: ['.mjs', '.json', '.ts', '.js'],
     symlinks: false,
     cacheWithContext: false,
-    plugins: [
-      new TsconfigPathsPlugin({ configFile: './tsconfig.json' })
-    ]
+    plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
   },
   output: {
     libraryTarget: 'commonjs',
@@ -49,10 +47,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new Dotenv({
-      path: path.resolve(__dirname, '.env'),
-      safe: true, // load .env.example if .env is missing
-    }),
-  ],
+  plugins: [new Dotenv()],
 };

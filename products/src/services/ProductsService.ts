@@ -139,8 +139,40 @@ export class ProductsService {
 
       return createdProduct;
     } catch {
-      throw new Error('Transaction failed');
+      throw new Error(
+        `Transaction failed. Could not creade product of ${JSON.stringify(
+          createdProduct
+        )}`
+      );
     }
+  }
+
+  async bulkCreateProducts(
+    products: Omit<Product, 'id'>[]
+  ): Promise<{ createdProducts: Product[]; errors: unknown }> {
+    const createdProducts: Product[] = [];
+    const errors = [];
+
+    await Promise.all(
+      products.map(async (product) => {
+        try {
+          const createdProduct = await productsService.createProduct(product);
+
+          console.log(
+            `Product was added to database\n${JSON.stringify(createdProduct)}`
+          );
+
+          createdProducts.push(createdProduct);
+        } catch (e) {
+          errors.push(e);
+        }
+      })
+    );
+
+    return {
+      createdProducts,
+      errors,
+    };
   }
 }
 
