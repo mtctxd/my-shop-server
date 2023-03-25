@@ -36,6 +36,14 @@ const serverlessConfiguration: AWS = {
           },
         },
       },
+      {
+        Effect: 'Allow',
+        Action: ['sqs:SendMessage', 'sqs:GetQueueUrl'],
+        Resource: {
+          'Fn::Sub':
+            'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:CATALOG_ITEMS_QUEUE',
+        },
+      },
     ],
   },
   // import the functions via paths

@@ -6,8 +6,13 @@ import { ENV } from '@declarations/env';
 
 dotenv.config();
 
-if (!process.env[ENV.TABLE_PRODUCTS] || !process.env[ENV.TABLE_STOCKS]) {
-  throw new Error('No ENV variable provided for table names');
+if (
+  !process.env[ENV.TABLE_PRODUCTS] ||
+  !process.env[ENV.TABLE_STOCKS] ||
+  !process.env[ENV.CATALOG_ITEMS_QUEUE] ||
+  !process.env[ENV.CREATE_PRODUCT_TOPIC]
+) {
+  throw new Error('Some ENV variables is not provided');
 }
 
 const serverlessConfiguration: AWS = {
@@ -27,7 +32,8 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       TABLE_PRODUCTS: process.env[ENV.TABLE_PRODUCTS],
-      TABLE_STOCKS: process.env[ENV.TABLE_STOCKS]
+      TABLE_STOCKS: process.env[ENV.TABLE_STOCKS],
+      CATALOG_ITEMS_QUEUE: process.env[ENV.CATALOG_ITEMS_QUEUE],
     },
     iamRoleStatements: [
       {
@@ -38,6 +44,7 @@ const serverlessConfiguration: AWS = {
           'dynamodb:GetItem',
           'dynamodb:PutItem',
           'dynamodb:DeleteItem',
+          'dynamodb:BatchWrite',
         ],
         Resource:
           'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE_PRODUCTS}',
@@ -50,9 +57,20 @@ const serverlessConfiguration: AWS = {
           'dynamodb:GetItem',
           'dynamodb:PutItem',
           'dynamodb:DeleteItem',
+          'dynamodb:BatchWrite',
         ],
         Resource:
           'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE_STOCKS}',
+      },
+      {
+        Effect: 'Allow',
+        Action: ['SQS:ReceiveMessage'],
+        Resource: [{ 'Fn::GetAtt': ['CatalogItamQueue', 'Arn'] }],
+      },
+      {
+        Effect: 'Allow',
+        Action: ['SNS:Publish'],
+        Resource: { Ref: 'CreateProductTopic' },
       },
     ],
   },
@@ -70,6 +88,12 @@ const serverlessConfiguration: AWS = {
   },
   resources: {
     Resources: {
+      CatalogItamQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: process.env[ENV.CATALOG_ITEMS_QUEUE],
+        },
+      },
       ProductsTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
@@ -112,6 +136,22 @@ const serverlessConfiguration: AWS = {
             WriteCapacityUnits: 1,
           },
           TableName: process.env[ENV.TABLE_STOCKS],
+        },
+      },
+      CreateProductTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: process.env[ENV.CREATE_PRODUCT_TOPIC],
+        },
+      },
+      CreateProductSubscribtion: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          TopicArn: {
+            Ref: 'CreateProductTopic',
+          },
+          Endpoint: process.env[ENV.BASIC_SUBSCRIBTION_EMAIL],
+          Protocol: 'email',
         },
       },
     },

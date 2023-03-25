@@ -17,7 +17,7 @@ export const createProduct: ValidatedEventAPIGatewayProxyEvent<
   if (!productCreateSchema.safeParse(product).success) {
     return formatJSONResponse({
       response: { message: 'The product is invalid' },
-      statusCode: StatusCode.BAD_REQUEST
+      statusCode: StatusCode.BAD_REQUEST,
     });
   }
 
@@ -30,7 +30,7 @@ export const createProduct: ValidatedEventAPIGatewayProxyEvent<
   } catch {
     formatJSONResponse({
       response: {
-        message: 'Could not create product'
+        message: 'Could not create product',
       },
       statusCode: StatusCode.INTERNAL_SERVER_ERROR,
     });

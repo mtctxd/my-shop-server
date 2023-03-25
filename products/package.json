@@ -16,8 +16,10 @@
     "node": ">=14.15.0"
   },
   "dependencies": {
+    "@aws-sdk/client-sns": "^3.293.0",
     "@middy/core": "^3.4.0",
     "@middy/http-json-body-parser": "^3.4.0",
+    "aws-sdk": "^2.1337.0",
     "dotenv": "^16.0.3",
     "lodash": "^4.17.21",
     "zod": "^3.20.6"

@@ -1,3 +1,4 @@
+import AWS from 'aws-sdk';
 import { StatusCode } from '@declarations/StatusCode';
 import { formatJSONResponse } from '@libs/api-gateway';
 import { midifyEvent } from '@libs/lambda';
@@ -8,6 +9,8 @@ import { S3Event } from 'aws-lambda';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+const sqs = new AWS.SQS();
 
 export const importFileParser: any = async (event: S3Event) => {
   const records = [];
@@ -20,6 +23,19 @@ export const importFileParser: any = async (event: S3Event) => {
 
       await moveFileToFolder({ record, destinationFolder: 'parsed' });
     }
+
+    console.log(JSON.stringify(records))
+
+    const { QueueUrl } = await sqs
+      .getQueueUrl({ QueueName: 'CATALOG_ITEMS_QUEUE' })
+      .promise();
+
+    await sqs
+      .sendMessage({
+        QueueUrl,
+        MessageBody: JSON.stringify(records),
+      })
+      .promise();
 
     return formatJSONResponse({
       statusCode: StatusCode.CREATED,
