@@ -21,6 +21,11 @@ export default {
               },
             },
           },
+          authorizer: {
+            type: 'token',
+            arn: 'arn:aws:lambda:us-east-1:530876135829:function:authorization-dev-basicAuthorizer',
+            identityValidationExpression: '^Basic .+$'
+          },
         },
       },
     ],
